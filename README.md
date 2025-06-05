@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @Bithiah
 - 👀 I’m interested in cars, food, music, programming
-- 🌱 I’m currently learning BSc in Computer science (In my first year)
+- 🌱 I’m currently learning BSc in Computer science (upcoming Sophmore)
 - 💞️ I’m looking to collaborate on Internship opportunities.
 - 📫 How to reach me botbithiah@gmail.com
 - 😄 Pronouns: She/Her
