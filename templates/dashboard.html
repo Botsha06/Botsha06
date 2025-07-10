@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Complaints - Estate App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    .top-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      font-size: 1.2rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .collapse-section {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .filter-form,
+    #search-section {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .suggestion-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      max-width: 300px;
+    }
+
+    .suggestion-list li {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .suggestion-list li:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn.small-btn {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+
+    .btn.btn-sm-view {
+      font-size: 0.8rem;
+      padding: 5px 10px;
+      background: #6d28d9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+
+    .btn.btn-sm-view:hover {
+      background: #7c3aed;
+    }
+
+    .pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      padding: 8px 12px;
+      margin: 2px;
+      border-radius: 6px;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+    }
+
+    .pagination .active {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome, {{ user.name }}</h2>
+
+    <!-- Top buttons -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <a href="/submit" class="btn">+ Submit Complaint</a>
+      <a href="/resident-info" class="btn">👤 Update Info</a>
+      <a href="/logout" class="btn">Logout</a>
+    </div>
+
+    <h3>Your Complaints</h3>
+
+    <!-- Controls -->
+    <div class="top-controls">
+      <button class="icon-btn" onclick="toggleFilter()">🧊</button>
+      <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+    </div>
+
+    <!-- Filter Section -->
+    <div id="filter-section" class="collapse-section">
+      <form method="GET" action="/dashboard" class="filter-form">
+        <input type="date" name="filter_date" value="{{ request.args.get('filter_date', '') }}">
+        {% if request.args.get('search') %}
+          <input type="hidden" name="search" value="{{ request.args.get('search') }}">
+        {% endif %}
+        <button type="submit" class="btn small-btn">Apply</button>
+      </form>
+    </div>
+
+    <!-- Search Section -->
+    <div id="search-section" class="collapse-section">
+      <form method="GET" action="/dashboard" class="filter-form">
+        <input type="text" name="search" id="search-input" placeholder="Search..." autocomplete="off" value="{{ request.args.get('search', '') }}">
+        {% if request.args.get('filter_date') %}
+          <input type="hidden" name="filter_date" value="{{ request.args.get('filter_date') }}">
+        {% endif %}
+        <button type="submit" class="btn small-btn">Search</button>
+        <ul id="search-suggestions" class="suggestion-list"></ul>
+      </form>
+    </div>
+
+    {% if user.resident_profile and (not user.resident_profile.phone or not user.resident_profile.house_number) %}
+      <div class="alert warning">
+        ⚠️ Your resident profile is incomplete. 
+        <a href="/resident-info">Click here to complete it</a>.
+      </div>
+    {% endif %}
+
+    {% if complaints %}
+      <ul class="complaint-list">
+        {% for complaint in complaints %}
+          <li class="complaint-card">
+            <strong>{{ complaint.title }}</strong><br>
+            <small>{{ complaint.timestamp.strftime("%Y-%m-%d %H:%M") }}</small><br>
+            <p>Status: 
+              <span class="status {{ complaint.status }}">
+                {{ complaint.status.title() }}
+              </span>
+            </p>
+
+            {% if complaint.image_path %}
+              <button 
+                type="button"
+                class="btn btn-sm-view"
+                onclick="openModal('{{ url_for('static', filename='uploads/' + complaint.image_path) }}')"
+              >
+                👁 View Image
+              </button>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      <!-- Pagination -->
+      {% if total_pages > 1 %}
+      <div class="pagination">
+        {% for p in range(1, total_pages + 1) %}
+          <a href="{{ url_for('dashboard') }}?page={{ p }}{% if request.args.get('filter_date') %}&filter_date={{ request.args.get('filter_date') }}{% endif %}{% if request.args.get('search') %}&search={{ request.args.get('search') }}{% endif %}"
+             class="{{ 'active' if p == current_page else '' }}">
+            {{ p }}
+          </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    {% else %}
+      <p>No complaints submitted yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox-modal" onclick="closeModal()" style="display: none; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 999;">
+    <img id="lightbox-image" style="max-width: 90%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 15px #0ea5e9;" src="" alt="Zoomed Image">
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    function openModal(src) {
+      document.getElementById('lightbox-image').src = src;
+      document.getElementById('lightbox-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('lightbox-modal').style.display = 'none';
+    }
+
+    function toggleFilter() {
+      const filter = document.getElementById('filter-section');
+      filter.style.display = (filter.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function toggleSearch() {
+      const search = document.getElementById('search-section');
+      search.style.display = (search.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Dynamic Suggestions
+    const searchInput = document.getElementById("search-input");
+    const suggestionList = document.getElementById("search-suggestions");
+
+    searchInput.addEventListener("input", async function () {
+      const query = this.value.trim();
+      suggestionList.innerHTML = '';
+
+      if (!query) return;
+
+      try {
+        const res = await fetch(`/search-suggestions?query=${encodeURIComponent(query)}`);
+        const suggestions = await res.json();
+
+        suggestions.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          li.onclick = () => {
+            searchInput.value = item;
+            suggestionList.innerHTML = '';
+          };
+          suggestionList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Search suggestion error:", err);
+      }
+    });
+  </script>
+</body>
+</html>

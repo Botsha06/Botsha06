@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resident Information</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <div class="container">
+    <h2 class="text-center mb-3">🏠 Resident Information</h2>
+
+    <form method="POST">
+      <div class="form-group mb-3">
+        <label for="name">Full Name</label>
+        <input type="text" name="name" id="name" value="{{ current_user.name }}" required>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="phone">Phone Number</label>
+        <input type="text" name="phone" id="phone" value="{{ profile.phone if profile else '' }}" required>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="house_number">House Number / Apartment</label>
+        <input type="text" name="house_number" id="house_number" value="{{ profile.house_number if profile else '' }}" required>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="emergency_contact">Emergency Contact (optional)</label>
+        <input type="text" name="emergency_contact" id="emergency_contact" value="{{ profile.emergency_contact if profile else '' }}">
+      </div>
+
+      <button type="submit" class="btn">💾 Save Info</button>
+    </form>
+  </div>
+
+</body>
+</html>

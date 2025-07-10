@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estate App - Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    /* Floating input animation */
+    .floating-input {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .floating-input input {
+      width: 100%;
+      padding: 14px 10px 14px 10px;
+      font-size: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .floating-input label {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      padding: 0 4px;
+      color: #cbd5e1;
+      pointer-events: none;
+      transition: 0.3s ease all;
+    }
+
+    .floating-input input:focus + label,
+    .floating-input input:not(:placeholder-shown) + label {
+      top: -8px;
+      left: 8px;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: #93c5fd;
+    }
+
+    .container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 8vh auto;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+
+    .flash-messages {
+      list-style: none;
+      padding: 0;
+      color: #f87171;
+      margin: 0 0 1rem;
+    }
+
+    @media (max-width: 480px) {
+  .container {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+}
+  </style>
+</head>
+<body>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <div class="container">
+    <h2>Login to Estate Portal</h2>
+    <form action="/login" method="POST">
+      
+      <div class="floating-input">
+        <input type="email" name="email" required placeholder=" " />
+        <label>Email</label>
+      </div>
+
+      <div class="floating-input">
+        <input type="password" name="password" required placeholder=" " />
+        <label>Password</label>
+      </div>
+
+      <div style="text-align: right; margin-bottom: 15px;">
+        <a href="/forgot-password">Forgot Password?</a>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p style="text-align:center; margin-top: 15px;">
+      Don't have an account? <a href="/register">Register here</a>
+    </p>
+  </div>
+
+</body>
+</html>
