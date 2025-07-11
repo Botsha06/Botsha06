@@ -29,11 +29,6 @@
 <div class="container py-4">
   <h2 class="mb-4">Admin Dashboard</h2>
 
-    <!-- Controls -->
-    <div class="top-controls">
-      <button class="icon-btn" onclick="toggleFilter()">🧊</button>
-    </div>
-
     <!-- Filter Section -->
     <div id="filter-section" class="collapse-section">
       <form method="GET" action="/admin_dashboard" class="filter-form">
@@ -56,12 +51,22 @@
 
     <!-- Search Section -->
 
-      <form action="/admin_dashboard" >
-        <input type="search" placeholder="Search here...">
-        <i class="fas fa-search"></i>
-      </form>   
+<!-- Search Section -->
+<div class="position-relative mb-4">
+  <form id="suggestion-form" action="/admin" method="GET" class="d-flex">
+    <input type="search" name="search" id="suggestion-input" class="form-control me-2" placeholder="Search here..." autocomplete="off">
+    <i class="fas fa-search"></i>
+  </form>
+  <ul id="suggestion-dropdown" class="list-group position-absolute w-100 z-3 mt-1 shadow"></ul>
+</div>
+
 
   {% if complaints %}
+
+  <button onclick="window.history.back()" class="btn btn-secondary mb-3">⬅️ Back</button>
+  {% if current_search %}
+  <a href="/admin" class="btn btn-outline-dark ms-2">🔄 Clear Search</a>
+{% endif %}
     <div class="row g-4" style="padding-top: 6px;">
       {% for complaint in complaints %}
       <div class="col-md-6">
@@ -203,7 +208,7 @@
 
 <!-- Autocomplete Suggestions Script -->
 <script>
-  const searchInput = document.querySelector('input[name="search"]');
+  const searchInput = document.getElementById("suggestion-input");
   const suggestionDropdown = document.getElementById("suggestion-dropdown");
 
   searchInput.addEventListener("input", async function () {
@@ -212,14 +217,17 @@
     if (query.length < 2) return;
 
     try {
-      const res = await fetch(/search-suggestions?query=${encodeURIComponent(query)});
+      const res = await fetch(`/search-suggestions?query=${encodeURIComponent(query)}`);
       const suggestions = await res.json();
 
       suggestions.forEach(text => {
-        const item = document.createElement('a');
+        const item = document.createElement('li');
         item.className = 'list-group-item list-group-item-action';
         item.textContent = text;
-        item.href = ?search=${encodeURIComponent(text)};
+        item.addEventListener('click', () => {
+          searchInput.value = text;
+          suggestionDropdown.innerHTML = '';
+        });
         suggestionDropdown.appendChild(item);
       });
     } catch (err) {
@@ -227,10 +235,14 @@
     }
   });
 
-  document.addEventListener('click', () => {
-    suggestionDropdown.innerHTML = '';
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target)) {
+      suggestionDropdown.innerHTML = '';
+    }
   });
 </script>
+
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

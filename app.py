@@ -112,7 +112,7 @@ def home():
 def register():
     if request.method == 'POST':
         name = request.form['name']
-        email = request.form['email']
+        email = request.form['email'].strip()
         password = request.form['password']
         role = request.form['role']
         if User.query.filter_by(email=email).first():
@@ -149,36 +149,30 @@ def logout():
     flash('Logged out successfully.')
     return redirect(url_for('login'))
 
-@app.route('/forgot-password', methods=['GET', 'POST'])
-def forgot_password():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        user = User.query.filter_by(email=email.strip().lower()).first()
-        if user:
-            token = generate_reset_token(email)
-            send_reset_email(email, token)
-        flash('If the email exists, a reset link has been sent.')
-        return redirect(url_for('forgot_password'))
-    return render_template('forgot_password.html')
-
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     email = verify_reset_token(token)
     if not email:
-        flash('Invalid or expired token.')
+        flash('❌ Invalid or expired reset link.', 'danger')
         return redirect(url_for('forgot_password'))
+
     if request.method == 'POST':
         password = request.form.get('password')
         confirm = request.form.get('confirm_password')
-        if password != confirm or len(password) < 7:
-            flash('Password must match and be at least 7 characters.')
+
+        if password != confirm:
+            flash('❌ Passwords do not match.', 'danger')
+        elif len(password) < 5:
+            flash('❌ Password must be at least 7 characters.', 'danger')
         else:
             user = User.query.filter_by(email=email).first()
             if user:
-                user.password = generate_password_hash(password, method='sha256')
+                user.password = generate_password_hash(password, method='pbkdf2:sha256')
                 db.session.commit()
-                flash('Password reset! Please log in.')
+                flash('✅ Password reset successful! Please log in.', 'success')
                 return redirect(url_for('login'))
+            else:
+                flash('❌ User not found.', 'danger')
     return render_template('reset_password.html', token=token)
 
 @app.route('/dashboard')
