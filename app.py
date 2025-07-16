@@ -335,7 +335,6 @@ def view_complaint(complaint_id):
     complaint = Complaint.query.get_or_404(complaint_id)
     return render_template('view_complaint.html', complaint=complaint)
 
-
 @app.route('/admin/export')
 def export_complaints():
     output = io.StringIO()
@@ -354,6 +353,11 @@ def export_complaints():
     response.headers["Content-Disposition"] = "attachment; filename=complaints.csv"
     response.headers["Content-type"] = "text/csv"
     return response
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
+
 
 # -------------------- Run App --------------------
 if __name__ == '__main__':
