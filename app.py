@@ -112,7 +112,7 @@ def home():
 def register():
     if request.method == 'POST':
         name = request.form['name']
-        email = request.form['email'].strip()
+        email = request.form['email']
         password = request.form['password']
         role = request.form['role']
         if User.query.filter_by(email=email).first():
@@ -149,30 +149,36 @@ def logout():
     flash('Logged out successfully.')
     return redirect(url_for('login'))
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email.strip().lower()).first()
+        if user:
+            token = generate_reset_token(email)
+            send_reset_email(email, token)
+        flash('If the email exists, a reset link has been sent.')
+        return redirect(url_for('forgot_password'))
+    return render_template('forgot_password.html')
+
 @app.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     email = verify_reset_token(token)
     if not email:
-        flash('❌ Invalid or expired reset link.', 'danger')
+        flash('Invalid or expired token.')
         return redirect(url_for('forgot_password'))
-
     if request.method == 'POST':
         password = request.form.get('password')
         confirm = request.form.get('confirm_password')
-
-        if password != confirm:
-            flash('❌ Passwords do not match.', 'danger')
-        elif len(password) < 5:
-            flash('❌ Password must be at least 7 characters.', 'danger')
+        if password != confirm or len(password) < 7:
+            flash('Password must match and be at least 7 characters.')
         else:
             user = User.query.filter_by(email=email).first()
             if user:
-                user.password = generate_password_hash(password, method='pbkdf2:sha256')
+                user.password = generate_password_hash(password, method='sha256')
                 db.session.commit()
-                flash('✅ Password reset successful! Please log in.', 'success')
+                flash('Password reset! Please log in.')
                 return redirect(url_for('login'))
-            else:
-                flash('❌ User not found.', 'danger')
     return render_template('reset_password.html', token=token)
 
 @app.route('/dashboard')
@@ -335,6 +341,7 @@ def view_complaint(complaint_id):
     complaint = Complaint.query.get_or_404(complaint_id)
     return render_template('view_complaint.html', complaint=complaint)
 
+
 @app.route('/admin/export')
 def export_complaints():
     output = io.StringIO()
@@ -353,11 +360,6 @@ def export_complaints():
     response.headers["Content-Disposition"] = "attachment; filename=complaints.csv"
     response.headers["Content-type"] = "text/csv"
     return response
-
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('500.html'), 500
-
 
 # -------------------- Run App --------------------
 if __name__ == '__main__':

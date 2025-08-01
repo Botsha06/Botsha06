@@ -109,34 +109,46 @@
 
     <h3>Your Complaints</h3>
 
-    <!-- Controls -->
-    <div class="top-controls">
-      <button class="icon-btn" onclick="toggleFilter()">🧊</button>
-      <button class="icon-btn" onclick="toggleSearch()">🔍</button>
-    </div>
+  <div class="top-menu">
+    <button onclick="toggleSearch()">Search</button>
+    <button onclick="toggleFilter()">Filter</button>
+  </div>
 
-    <!-- Filter Section -->
-    <div id="filter-section" class="collapse-section">
-      <form method="GET" action="/dashboard" class="filter-form">
-        <input type="date" name="filter_date" value="{{ request.args.get('filter_date', '') }}">
-        {% if request.args.get('search') %}
-          <input type="hidden" name="search" value="{{ request.args.get('search') }}">
-        {% endif %}
-        <button type="submit" class="btn small-btn">Apply</button>
-      </form>
-    </div>
+  <!-- Search Section -->
+  <div id="search-section" class="collapse-section" style="display: none;">
+    <form method="GET" action="/dashboard" class="filter-form">
+      <input type="text" name="search" id="search-input" placeholder="Search..." autocomplete="off" value="{{ request.args.get('search', '') }}">
+      <button type="submit">Go</button>
+    </form>
+  </div>
+  {% if request.args.get('search') %}
+  <a href="/dashboard" class="back-button">← Back</a>
+{% endif %}
 
-    <!-- Search Section -->
-    <div id="search-section" class="collapse-section">
-      <form method="GET" action="/dashboard" class="filter-form">
-        <input type="text" name="search" id="search-input" placeholder="Search..." autocomplete="off" value="{{ request.args.get('search', '') }}">
-        {% if request.args.get('filter_date') %}
-          <input type="hidden" name="filter_date" value="{{ request.args.get('filter_date') }}">
-        {% endif %}
-        <button type="submit" class="btn small-btn">Search</button>
-        <ul id="search-suggestions" class="suggestion-list"></ul>
-      </form>
-    </div>
+
+
+  <!-- Filter Section -->
+  <div id="filter-section" class="collapse-section" style="display: none;">
+    <form method="GET" action="/dashboard" class="filter-form">
+      <label for="from">From:</label>
+      <input type="date" name="from" id="from" value="{{ request.args.get('from', '') }}">
+
+      <label for="to">To:</label>
+      <input type="date" name="to" id="to" value="{{ request.args.get('to', '') }}">
+
+      {% if request.args.get('search') %}
+        <!-- Preserve search term while filtering -->
+        <input type="hidden" name="search" value="{{ request.args.get('search') }}">
+      {% endif %}
+
+      <button type="submit">Apply Filter</button>
+    </form>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content">
+    <!-- Display table or data here -->
+  </div>
 
     {% if user.resident_profile and (not user.resident_profile.phone or not user.resident_profile.house_number) %}
       <div class="alert warning">
@@ -205,13 +217,18 @@
 
     function toggleFilter() {
       const filter = document.getElementById('filter-section');
+      const search = document.getElementById('search-section');
+      search.style.display = 'none';
       filter.style.display = (filter.style.display === 'block') ? 'none' : 'block';
     }
 
     function toggleSearch() {
+      const filter = document.getElementById('filter-section');
       const search = document.getElementById('search-section');
+      filter.style.display = 'none';
       search.style.display = (search.style.display === 'block') ? 'none' : 'block';
     }
+
 
     // Dynamic Suggestions
     const searchInput = document.getElementById("search-input");

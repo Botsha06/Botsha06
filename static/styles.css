@@ -336,3 +336,66 @@ button:hover,
   background: #07051a;
   color: white;
 }
+
+.floating-input {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.floating-input input {
+  font-size: 16px;
+  padding: 16px 12px 12px 12px;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  color: #111;
+  outline: none;
+}
+
+.floating-input label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 16px;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.floating-input input:focus + label,
+.floating-input input:not(:placeholder-shown) + label {
+  top: 8px;
+  left: 12px;
+  font-size: 13px;
+  color: #333;
+  background: transparent;
+}
+
+.floating-input input:focus {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+.floating-input input:hover {
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #444;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  border-radius: 4px;
+  animation:cubic-bezier(1, 0, 0, 1)
+}
+.back-button:hover {
+  background-color: #ddd;
+}
+
+
