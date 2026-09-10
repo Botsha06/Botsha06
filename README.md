@@ -1,56 +1,37 @@
-<<<<<<< HEAD
-# 🏡 Estate Issue Reporting System
+# Hi, I'm Bithiah Botsha 👋
 
-A real-time web app that allows estate residents to report issues (e.g. water leaks, electricity outages, etc.), track status, and communicate with admins efficiently.
+I am a **Computer Science student at Calvin University** passionate about **cybersecurity, secure software engineering, and network security**. My goal is to build secure, reliable systems—ranging from full-stack web applications to security monitoring tools and anti-cheat solutions.
 
-## 💡 Features
-- Resident registration/login
-- Submit complaints with image proof
-- Real-time status tracking (Pending → In Progress → Resolved)
-- Admin dashboard to filter, manage, and resolve issues
-- Beautiful UI with glassmorphism + dark mode toggle
-- Upload proof image (stored locally )
-- Export complaints to CSV (for records)
-- Mobile-responsive layout
+---
 
-## 📦 Tech Stack
-- Frontend: HTML5, CSS3, JavaScript
-- Backend: Flask (Python)
-- Database: SQLite (or upgrade to PostgreSQL/MySQL)
-- File Uploads: Local (or Cloudinary)
-- Deployment: Render / Netlify + Flask
+### 🛡️ About Me & Focus
+- 🎓 **Education:** B.S. in Computer Science @ [Calvin University](https://calvin.edu)
+- 🎯 **Target Roles:** Summer Cybersecurity / Information Security Internships
+- 📜 **Certifications & Training:** Google Cybersecurity Professional Certificate | CompTIA Security+ Candidate | TryHackMe Labs
+- 💼 **Leadership:** SET Leader & Software Project Lead / Manager across full-stack student development teams
 
-## 🚀 Getting Started
+---
 
-```bash
-estate-app.git
-cd estate-app
-pip install -r requirements.txt
-python3 app.py
+### 💻 Tech Stack & Security Toolkit
 
-A real-time resident feedback tool
+- **Languages:** Python, C++, C#, SQL, HTML5, CSS3, JavaScript
+- **Frameworks & Web:** Flask, Node.js, SQLite, REST APIs
+- **Security & Tools:** Wireshark, Linux / Bash, Git / GitHub, TryHackMe, Vulnerability Management
+- **Core Concepts:** Secure Software Development, Network Traffic Analysis, Full-Stack Architecture, Game Security Basics
 
-Built to replace manual WhatsApp or Excel tracking
+---
 
-Easily customizable to their estate or organization
+### 🚀 Featured Projects
 
-Private, efficient, and optionally cloud-hosted
+#### 🏡 [Estate Issue Reporting System](https://github.com/Botsha06)
+*A real-time web application built with Flask and JavaScript allowing residents to report issues, track resolution status, and attach proof.*
+- **Tech Stack:** Python (Flask), JavaScript, HTML/CSS, SQLite
+- **Key Features:** User authentication, image file uploads, admin management dashboard, CSV data exports, and dark mode UI.
 
-```
+---
 
-## 📝 License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-=======
-- 👋 Hi, I’m @Bithiah
-- 👀 I’m interested in cars, food, music, programming
-- 🌱 I’m currently learning BSc in Computer science (upcoming Sophmore)
-- 💞️ I’m looking to collaborate on Internship opportunities.
-- 📫 How to reach me botbithiah@gmail.com
-- 😄 Pronouns: She/Her
-- ⚡ Fun fact: I have a unexplainable interest to cars I don't know why but...yeahhh
+### 📫 Connect with Me
 
-<!---
-Botsha06/Botsha06 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
->>>>>>> 2c137b957686744681868b6ddc025815408c4feb
+- 💼 **LinkedIn:** [Bithiah Botsha](https://www.linkedin.com/in/bithiah-botsha-34499a328)
+- 📧 **Email:** [bnb29@calvin.edu](mailto:botbithiah@gmail.com)
+- 📍 **Location:** Grand Rapids, MI
